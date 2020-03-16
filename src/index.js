@@ -187,6 +187,7 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
         });
     }, []);
     const onStringValueChanged = useCallback(e => {
+        e.persist();
         setObjValue(oldObj => {
             const newObj = {
                 ...oldObj,

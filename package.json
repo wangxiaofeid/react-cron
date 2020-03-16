@@ -5,7 +5,8 @@
     "main": "lib/index.js",
     "scripts": {
         "start": "doc-scripts start",
-        "build": "rimraf lib && echo Using Babel && babel --version && babel src --out-dir lib"
+        "build": "rimraf lib && echo Using Babel && babel --version && babel src --out-dir lib",
+        "publish": "npm publish --access=public"
     },
     "repository": {
         "type": "git",
