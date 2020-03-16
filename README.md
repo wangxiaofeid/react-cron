@@ -4,7 +4,7 @@
 
 特点
 
--   简洁、好实用
+-   使用简单
 -   易于理解
 
 # api
@@ -14,7 +14,7 @@
 | defaultValue | 指定默认值           | String          | -      |
 | value        | 指定当前 Cron 值     | String          | -      |
 | onChange     | 修改 Cron 调用此函数 | function(value) | -      |
-| multiple     | 是否可以多选         | Object          | -      |
+| multiple     | 是否可以多选         | Boolean         | -      |
 
 # 示例
 
