@@ -19,7 +19,7 @@
 # 示例
 
 <div align="left">
-    <img width=552 src="./snapshot.png" alt="效果图" />
+    <img src="./snapshot.png" alt="效果图" />
 </div>
 
 ```jsx
