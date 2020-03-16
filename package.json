@@ -1,0 +1,41 @@
+{
+    "name": "@xiaofei.wang/react-cron",
+    "version": "1.0.0",
+    "description": "react版本cron表达式",
+    "main": "lib/index.js",
+    "scripts": {
+        "start": "doc-scripts start",
+        "build": "rimraf lib && echo Using Babel && babel --version && babel src --out-dir lib"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/wangxiaofeid/react-cron.git"
+    },
+    "keywords": [
+        "react",
+        "corn",
+        "antd"
+    ],
+    "author": "xiaofei.wang",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/wangxiaofeid/react-cron/issues"
+    },
+    "homepage": "https://github.com/wangxiaofeid/react-cron#readme",
+    "peerDependencies": {
+        "antd": ">=3.26.0",
+        "react": ">=16.6.3",
+        "react-dom": ">=16.6.3"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.8.4",
+        "@babel/core": "^7.0.1",
+        "@babel/plugin-proposal-class-properties": "^7.0.0",
+        "@babel/plugin-proposal-decorators": "^7.0.0",
+        "@babel/preset-env": "^7.0.0",
+        "@babel/preset-react": "^7.0.0",
+        "babel-plugin-import": "^1.11.0",
+        "doc-scripts": "^1.8.1",
+        "antd": "^4.0.2"
+    }
+}
