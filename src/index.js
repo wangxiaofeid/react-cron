@@ -64,11 +64,11 @@ const cornFormat = (corn, mode) => {
         freq,
         stringValue: value,
         ss: parseInt(ss) || 0,
-        mm: freq === 'everyHours' && !mode ? mm.split(',').filter(i => !!i) : parseInt(mm) || 0,
+        mm: freq === 'everyHours' && !mode ? mm.split(',').filter((i) => !!i) : parseInt(mm) || 0,
         HH: parseInt(HH) || 0,
-        dd: dd.split(',').filter(i => !!i),
-        MM: MM.split(',').filter(i => !!i),
-        week: week.split(',').filter(i => !!i),
+        dd: dd.split(',').filter((i) => !!i),
+        MM: MM.split(',').filter((i) => !!i),
+        week: week.split(',').filter((i) => !!i),
         yyyy,
     };
 };
@@ -95,7 +95,7 @@ const cornStringify = ({ freq, stringValue, ss, mm, HH, dd, MM, week, yyyy }) =>
         week = '?';
         dd = '*';
         HH = '*';
-        ss = '*';
+        ss = '0';
     }
 
     return `${ss} ${mm} ${HH} ${dd} ${MM} ${week} ${yyyy}`;
@@ -104,13 +104,13 @@ const cornStringify = ({ freq, stringValue, ss, mm, HH, dd, MM, week, yyyy }) =>
 export default function CronForm({ defaultValue, value, onChange, multiple }) {
     const [objValue, setObjValue] = useState({});
     const thisCron = useRef('');
-    const changeValue = useCallback(newObj => {
+    const changeValue = useCallback((newObj) => {
         const cronString = cornStringify(newObj);
         thisCron.current = cronString;
         onChange && onChange(cronString);
     });
-    const onFreqChanged = useCallback(freq => {
-        setObjValue(oldObj => {
+    const onFreqChanged = useCallback((freq) => {
+        setObjValue((oldObj) => {
             const newObj = {
                 ...oldObj,
                 freq,
@@ -133,8 +133,8 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             return newObj;
         });
     }, []);
-    const onMonthOfYearChanged = useCallback(MM => {
-        setObjValue(oldObj => {
+    const onMonthOfYearChanged = useCallback((MM) => {
+        setObjValue((oldObj) => {
             const newObj = {
                 ...oldObj,
                 MM,
@@ -143,8 +143,8 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             return newObj;
         });
     }, []);
-    const onDayOfWeekChanged = useCallback(week => {
-        setObjValue(oldObj => {
+    const onDayOfWeekChanged = useCallback((week) => {
+        setObjValue((oldObj) => {
             const newObj = {
                 ...oldObj,
                 week,
@@ -153,8 +153,8 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             return newObj;
         });
     }, []);
-    const onDayOfMonthChanged = useCallback(dd => {
-        setObjValue(oldObj => {
+    const onDayOfMonthChanged = useCallback((dd) => {
+        setObjValue((oldObj) => {
             const newObj = {
                 ...oldObj,
                 dd,
@@ -163,8 +163,8 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             return newObj;
         });
     }, []);
-    const onFreqTimeChanged = useCallback(time => {
-        setObjValue(oldObj => {
+    const onFreqTimeChanged = useCallback((time) => {
+        setObjValue((oldObj) => {
             const newTime = time
                 ? { ss: time.second(), mm: time.minute(), HH: time.hour() }
                 : { ss: 0, mm: 0, HH: 0 };
@@ -176,8 +176,8 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             return newObj;
         });
     }, []);
-    const onMinuteOfHoursListChanged = useCallback(mm => {
-        setObjValue(oldObj => {
+    const onMinuteOfHoursListChanged = useCallback((mm) => {
+        setObjValue((oldObj) => {
             const newObj = {
                 ...oldObj,
                 mm,
@@ -186,9 +186,9 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             return newObj;
         });
     }, []);
-    const onStringValueChanged = useCallback(e => {
+    const onStringValueChanged = useCallback((e) => {
         e.persist();
-        setObjValue(oldObj => {
+        setObjValue((oldObj) => {
             const newObj = {
                 ...oldObj,
                 stringValue: e.target.value,
