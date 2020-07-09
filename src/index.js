@@ -199,7 +199,12 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
     }, []);
     useEffect(() => {
         thisCron.current = value;
-        setObjValue(cornFormat(value || defaultValue, multiple));
+        const objValue = cornFormat(value || defaultValue, multiple);
+        setObjValue(objValue);
+        // 默认按天调度
+        if (!value && !defaultValue) {
+            changeValue(objValue);
+        }
     }, []);
     useEffect(() => {
         if (thisCron.current !== value) {
