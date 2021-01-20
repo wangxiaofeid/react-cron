@@ -30,6 +30,7 @@ const dayOfMonthList = [
     {
         label: '月末',
         value: 'L',
+        exclusive: true,
     },
 ];
 const monthOfYearList = eachNum(1, 12, '月');
@@ -41,6 +42,10 @@ const freqList = [
     { value: 'year', label: '每年' },
     { value: 'custom', label: '自定义' },
 ];
+const exclusiveDays = dayOfMonthList.filter(d => d.exclusive).map(d => d.value);
+const checkIncludeExclusive = dd => {
+    return !!(dd || []).find(d => exclusiveDays.includes(d));
+};
 const cornFormat = (corn, mode) => {
     const value = corn || '0 0 0 * * ? *';
     const cronElements = value.split(' ');
@@ -50,7 +55,7 @@ const cornFormat = (corn, mode) => {
         freq = 'custom';
     } else if (week !== '?') {
         freq = 'week';
-    } else if (MM === '*' && dd === '*' && HH === '*' && ss === '*') {
+    } else if (MM === '*' && dd === '*' && HH === '*' && mm !== '*' && ss === '0') {
         freq = 'everyHours';
     } else if (MM === '*' && dd === '*') {
         freq = 'everyday';
@@ -64,11 +69,11 @@ const cornFormat = (corn, mode) => {
         freq,
         stringValue: value,
         ss: parseInt(ss) || 0,
-        mm: freq === 'everyHours' && !mode ? mm.split(',').filter((i) => !!i) : parseInt(mm) || 0,
+        mm: freq === 'everyHours' && !!mode ? mm.split(',').filter(i => !!i) : parseInt(mm) || 0,
         HH: parseInt(HH) || 0,
-        dd: dd.split(',').filter((i) => !!i),
-        MM: MM.split(',').filter((i) => !!i),
-        week: week.split(',').filter((i) => !!i),
+        dd: dd.split(',').filter(i => !!i),
+        MM: MM.split(',').filter(i => !!i),
+        week: week.split(',').filter(i => !!i),
         yyyy,
     };
 };
@@ -104,13 +109,13 @@ const cornStringify = ({ freq, stringValue, ss, mm, HH, dd, MM, week, yyyy }) =>
 export default function CronForm({ defaultValue, value, onChange, multiple }) {
     const [objValue, setObjValue] = useState({});
     const thisCron = useRef('');
-    const changeValue = useCallback((newObj) => {
+    const changeValue = useCallback(newObj => {
         const cronString = cornStringify(newObj);
         thisCron.current = cronString;
         onChange && onChange(cronString);
     });
-    const onFreqChanged = useCallback((freq) => {
-        setObjValue((oldObj) => {
+    const onFreqChanged = useCallback(freq => {
+        setObjValue(oldObj => {
             const newObj = {
                 ...oldObj,
                 freq,
@@ -133,8 +138,8 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             return newObj;
         });
     }, []);
-    const onMonthOfYearChanged = useCallback((MM) => {
-        setObjValue((oldObj) => {
+    const onMonthOfYearChanged = useCallback(MM => {
+        setObjValue(oldObj => {
             const newObj = {
                 ...oldObj,
                 MM,
@@ -143,8 +148,8 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             return newObj;
         });
     }, []);
-    const onDayOfWeekChanged = useCallback((week) => {
-        setObjValue((oldObj) => {
+    const onDayOfWeekChanged = useCallback(week => {
+        setObjValue(oldObj => {
             const newObj = {
                 ...oldObj,
                 week,
@@ -153,8 +158,8 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             return newObj;
         });
     }, []);
-    const onDayOfMonthChanged = useCallback((dd) => {
-        setObjValue((oldObj) => {
+    const onDayOfMonthChanged = useCallback(dd => {
+        setObjValue(oldObj => {
             const newObj = {
                 ...oldObj,
                 dd,
@@ -163,8 +168,8 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             return newObj;
         });
     }, []);
-    const onFreqTimeChanged = useCallback((time) => {
-        setObjValue((oldObj) => {
+    const onFreqTimeChanged = useCallback(time => {
+        setObjValue(oldObj => {
             const newTime = time
                 ? { ss: time.second(), mm: time.minute(), HH: time.hour() }
                 : { ss: 0, mm: 0, HH: 0 };
@@ -176,8 +181,8 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             return newObj;
         });
     }, []);
-    const onMinuteOfHoursListChanged = useCallback((mm) => {
-        setObjValue((oldObj) => {
+    const onMinuteOfHoursListChanged = useCallback(mm => {
+        setObjValue(oldObj => {
             const newObj = {
                 ...oldObj,
                 mm,
@@ -186,9 +191,9 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             return newObj;
         });
     }, []);
-    const onStringValueChanged = useCallback((e) => {
+    const onStringValueChanged = useCallback(e => {
         e.persist();
-        setObjValue((oldObj) => {
+        setObjValue(oldObj => {
             const newObj = {
                 ...oldObj,
                 stringValue: e.target.value,
@@ -212,13 +217,14 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             setObjValue(cornFormat(value, multiple));
         }
     }, [value]);
-    const { freq, stringValue, ss, mm, HH, dd = [], MM, week = [], yyyy } = objValue;
+    const { freq, stringValue, ss, mm, HH, dd = [], MM, week = [] } = objValue;
     const mode = multiple ? 'multiple' : undefined;
     const isYear = freq === 'year',
         isMonth = freq === 'month',
         isWeek = freq === 'week',
         isHours = freq === 'everyHours',
         isCustom = freq === 'custom';
+    const isIncludeExclusive = mode && checkIncludeExclusive(dd);
     return (
         <Fragment>
             <Select value={freq} onChange={onFreqChanged} style={mwidth80}>
@@ -254,8 +260,14 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
                     placeholder="日期"
                     allowClear={isYear}
                 >
-                    {dayOfMonthList.map(({ value, label }) => (
-                        <Option key={value} value={value}>
+                    {dayOfMonthList.map(({ value, label, exclusive }) => (
+                        <Option
+                            key={value}
+                            value={value}
+                            disabled={
+                                mode && dd && dd.length > 0 && isIncludeExclusive === !exclusive
+                            }
+                        >
                             {label}
                         </Option>
                     ))}
