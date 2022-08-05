@@ -42,9 +42,9 @@ const freqList = [
     { value: 'year', label: '每年' },
     { value: 'custom', label: '自定义' },
 ];
-const exclusiveDays = dayOfMonthList.filter(d => d.exclusive).map(d => d.value);
-const checkIncludeExclusive = dd => {
-    return !!(dd || []).find(d => exclusiveDays.includes(d));
+const exclusiveDays = dayOfMonthList.filter((d) => d.exclusive).map((d) => d.value);
+const checkIncludeExclusive = (dd) => {
+    return !!(dd || []).find((d) => exclusiveDays.includes(d));
 };
 const cornFormat = (corn, mode) => {
     const value = corn || '0 0 0 * * ? *';
@@ -69,11 +69,11 @@ const cornFormat = (corn, mode) => {
         freq,
         stringValue: value,
         ss: parseInt(ss) || 0,
-        mm: freq === 'everyHours' && !!mode ? mm.split(',').filter(i => !!i) : parseInt(mm) || 0,
+        mm: freq === 'everyHours' && !!mode ? mm.split(',').filter((i) => !!i) : parseInt(mm) || 0,
         HH: parseInt(HH) || 0,
-        dd: dd.split(',').filter(i => !!i),
-        MM: MM.split(',').filter(i => !!i),
-        week: week.split(',').filter(i => !!i),
+        dd: dd.split(',').filter((i) => !!i),
+        MM: MM.split(',').filter((i) => !!i),
+        week: week.split(',').filter((i) => !!i),
         yyyy,
     };
 };
@@ -106,16 +106,16 @@ const cornStringify = ({ freq, stringValue, ss, mm, HH, dd, MM, week, yyyy }) =>
     return `${ss} ${mm} ${HH} ${dd} ${MM} ${week} ${yyyy}`;
 };
 
-export default function CronForm({ defaultValue, value, onChange, multiple }) {
+export default function CronForm({ defaultValue, value, onChange, multiple, disabled }) {
     const [objValue, setObjValue] = useState({});
     const thisCron = useRef('');
-    const changeValue = useCallback(newObj => {
+    const changeValue = useCallback((newObj) => {
         const cronString = cornStringify(newObj);
         thisCron.current = cronString;
         onChange && onChange(cronString);
     });
-    const onFreqChanged = useCallback(freq => {
-        setObjValue(oldObj => {
+    const onFreqChanged = useCallback((freq) => {
+        setObjValue((oldObj) => {
             const newObj = {
                 ...oldObj,
                 freq,
@@ -138,8 +138,8 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             return newObj;
         });
     }, []);
-    const onMonthOfYearChanged = useCallback(MM => {
-        setObjValue(oldObj => {
+    const onMonthOfYearChanged = useCallback((MM) => {
+        setObjValue((oldObj) => {
             const newObj = {
                 ...oldObj,
                 MM,
@@ -148,8 +148,8 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             return newObj;
         });
     }, []);
-    const onDayOfWeekChanged = useCallback(week => {
-        setObjValue(oldObj => {
+    const onDayOfWeekChanged = useCallback((week) => {
+        setObjValue((oldObj) => {
             const newObj = {
                 ...oldObj,
                 week,
@@ -158,8 +158,8 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             return newObj;
         });
     }, []);
-    const onDayOfMonthChanged = useCallback(dd => {
-        setObjValue(oldObj => {
+    const onDayOfMonthChanged = useCallback((dd) => {
+        setObjValue((oldObj) => {
             const newObj = {
                 ...oldObj,
                 dd,
@@ -168,8 +168,8 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             return newObj;
         });
     }, []);
-    const onFreqTimeChanged = useCallback(time => {
-        setObjValue(oldObj => {
+    const onFreqTimeChanged = useCallback((time) => {
+        setObjValue((oldObj) => {
             const newTime = time
                 ? { ss: time.second(), mm: time.minute(), HH: time.hour() }
                 : { ss: 0, mm: 0, HH: 0 };
@@ -181,8 +181,8 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             return newObj;
         });
     }, []);
-    const onMinuteOfHoursListChanged = useCallback(mm => {
-        setObjValue(oldObj => {
+    const onMinuteOfHoursListChanged = useCallback((mm) => {
+        setObjValue((oldObj) => {
             const newObj = {
                 ...oldObj,
                 mm,
@@ -191,9 +191,9 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             return newObj;
         });
     }, []);
-    const onStringValueChanged = useCallback(e => {
+    const onStringValueChanged = useCallback((e) => {
         e.persist();
-        setObjValue(oldObj => {
+        setObjValue((oldObj) => {
             const newObj = {
                 ...oldObj,
                 stringValue: e.target.value,
@@ -227,7 +227,7 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
     const isIncludeExclusive = mode && checkIncludeExclusive(dd);
     return (
         <Fragment>
-            <Select value={freq} onChange={onFreqChanged} style={mwidth80}>
+            <Select value={freq} onChange={onFreqChanged} style={mwidth80} disabled={disabled}>
                 {freqList.map(({ value, label }) => (
                     <Option key={value} value={value}>
                         {label}
@@ -242,6 +242,7 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
                     mode={mode}
                     style={mwidth80}
                     placeholder="月份"
+                    disabled={disabled}
                 >
                     {monthOfYearList.map(({ value, label }) => (
                         <Option key={value} value={value}>
@@ -259,6 +260,7 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
                     style={mwidth80}
                     placeholder="日期"
                     allowClear={isYear}
+                    disabled={disabled}
                 >
                     {dayOfMonthList.map(({ value, label, exclusive }) => (
                         <Option
@@ -281,6 +283,7 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
                     mode={mode}
                     style={mwidth80}
                     placeholder="日期"
+                    disabled={disabled}
                 >
                     {dayOfWeekList.map(({ value, label }) => (
                         <Option key={value} value={value}>
@@ -297,6 +300,7 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
                     mode={mode}
                     style={mwidth80}
                     placeholder="分钟"
+                    disabled={disabled}
                 >
                     {minuteOfHoursList.map(({ value, label }) => (
                         <Option key={value} value={value}>
@@ -307,11 +311,20 @@ export default function CronForm({ defaultValue, value, onChange, multiple }) {
             )}
 
             {!isHours && !isCustom && (
-                <TimePicker value={moment({ h: HH, m: mm, s: ss })} onChange={onFreqTimeChanged} />
+                <TimePicker
+                    value={moment({ h: HH, m: mm, s: ss })}
+                    onChange={onFreqTimeChanged}
+                    disabled={disabled}
+                />
             )}
 
             {isCustom && (
-                <Input style={width150} value={stringValue} onChange={onStringValueChanged} />
+                <Input
+                    style={width150}
+                    value={stringValue}
+                    onChange={onStringValueChanged}
+                    disabled={disabled}
+                />
             )}
         </Fragment>
     );

@@ -1,6 +1,6 @@
 {
     "name": "@xiaofei.wang/react-cron",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "react版本cron表达式",
     "main": "lib/index.js",
     "scripts": {
